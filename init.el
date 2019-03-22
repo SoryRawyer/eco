@@ -1,4 +1,4 @@
-;;; init.el --- summary
+;;; Init.el --- summary
 ;;; Commentary:
 ;; Emacs setup
 
@@ -18,10 +18,13 @@
 (defvar myPackages
   '(better-defaults
     elpy
-    material-theme
     flycheck
-    org
+    helm
+    lsp-mode
+    lsp-ui
+    material-theme
     multiple-cursors
+    org
     yaml-mode))
 
 (mapc #'(lambda (package)
@@ -69,6 +72,24 @@
 ;;(exec-path-from-shell-initialize)
 
 
+;; lsp config
+(require 'lsp-mode)
+(require 'lsp-ui)
+(add-hook 'lsp-mode-hook 'lsp-ui-mode)
+(add-hook 'java-mode-hook 'flycheck-mode)
+
+;; org mode
+(global-set-key (kbd "C-c o l") 'org-store-link)
+(global-set-key (kbd "C-c o a") 'org-agenda)
+(global-set-key (kbd "C-c o c") 'org-capture)
+(global-set-key (kbd "C-c o b") 'org-switchb)
+
+
+;; helm mode
+(require 'helm-config)
+(helm-mode 1)
+
+
 ;; python-specific stuff
 (elpy-enable)
 
@@ -83,7 +104,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (org org-plus-contrib multiple-cursors yaml-mode exec-path-from-shell flycheck jedi elpy material-theme better-defaults))))
+    (lsp-ui lsp-java lsp-mode helm org org-plus-contrib multiple-cursors yaml-mode exec-path-from-shell flycheck jedi elpy material-theme better-defaults))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
