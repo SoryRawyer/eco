@@ -79,11 +79,18 @@
 (add-hook 'java-mode-hook 'flycheck-mode)
 
 ;; org mode
+(require 'org)
 (global-set-key (kbd "C-c o l") 'org-store-link)
 (global-set-key (kbd "C-c o a") 'org-agenda)
 (global-set-key (kbd "C-c o c") 'org-capture)
 (global-set-key (kbd "C-c o b") 'org-switchb)
+(setq org-log-done t)
 
+;; Make windmove work in Org mode:
+(add-hook 'org-shiftup-final-hook 'windmove-up)
+(add-hook 'org-shiftleft-final-hook 'windmove-left)
+(add-hook 'org-shiftdown-final-hook 'windmove-down)
+(add-hook 'org-shiftright-final-hook 'windmove-right)
 
 ;; helm mode
 (require 'helm-config)
@@ -104,7 +111,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (lsp-ui lsp-java lsp-mode helm org org-plus-contrib multiple-cursors yaml-mode exec-path-from-shell flycheck jedi elpy material-theme better-defaults))))
+    (company-jedi lsp-ui lsp-java lsp-mode helm org org-plus-contrib multiple-cursors yaml-mode exec-path-from-shell flycheck jedi elpy material-theme better-defaults))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
