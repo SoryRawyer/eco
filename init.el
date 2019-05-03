@@ -22,6 +22,7 @@
     helm
     lsp-mode
     lsp-ui
+    magit
     material-theme
     multiple-cursors
     org
@@ -77,6 +78,10 @@
 (require 'lsp-ui)
 (add-hook 'lsp-mode-hook 'lsp-ui-mode)
 (add-hook 'java-mode-hook 'flycheck-mode)
+
+
+;; magit config
+(global-set-key (kbd "C-x g") 'magit-status)
 
 ;; org mode
 (require 'org)
