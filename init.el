@@ -15,10 +15,11 @@
 (when (not package-archive-contents)
   (package-refresh-contents))
 
-(defvar myPackages
+(defvar package-list
   '(better-defaults
     elpy
     flycheck
+    haskell-mode
     helm
     lsp-mode
     lsp-ui
@@ -26,12 +27,14 @@
     material-theme
     multiple-cursors
     org
+    rainbow-delimiters
+    ruby-electric
     yaml-mode))
 
 (mapc #'(lambda (package)
     (unless (package-installed-p package)
       (package-install package)))
-      myPackages)
+      package-list)
 
 ;; misc
 (load-theme 'material t) ;; load the "material" theme
@@ -39,6 +42,7 @@
 (setq column-number-mode t) ;; enable column numbers globally
 (windmove-default-keybindings) ;; shift + arrow = switch open buffers
 (electric-pair-mode 1) ;; enable matching close paren/quote/etc globally
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 ;; file backup stuff
 (setq
@@ -101,6 +105,8 @@
 (require 'helm-config)
 (helm-mode 1)
 
+;; ruby mode
+(add-hook 'ruby-mode-hook 'ruby-electric-mode)
 
 ;; python-specific stuff
 (elpy-enable)
@@ -114,9 +120,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (company-jedi lsp-ui lsp-java lsp-mode helm org org-plus-contrib multiple-cursors yaml-mode exec-path-from-shell flycheck jedi elpy material-theme better-defaults))))
+    (ruby-electric haskell-mode company-jedi lsp-ui lsp-java lsp-mode helm org org-plus-contrib multiple-cursors yaml-mode exec-path-from-shell flycheck jedi elpy material-theme better-defaults))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
