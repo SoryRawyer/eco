@@ -9,6 +9,8 @@
 ;;; Code:
 (add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/") t)
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 
 (package-initialize)
@@ -27,8 +29,10 @@
     material-theme
     multiple-cursors
     org
+    racket-mode
     rainbow-delimiters
     ruby-electric
+    undo-tree
     yaml-mode))
 
 (mapc #'(lambda (package)
@@ -123,7 +127,7 @@
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (ruby-electric haskell-mode company-jedi lsp-ui lsp-java lsp-mode helm org org-plus-contrib multiple-cursors yaml-mode exec-path-from-shell flycheck jedi elpy material-theme better-defaults))))
+    (undo-tree racket-mode ruby-electric haskell-mode company-jedi lsp-ui lsp-java lsp-mode helm org org-plus-contrib multiple-cursors yaml-mode exec-path-from-shell flycheck jedi elpy material-theme better-defaults))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
