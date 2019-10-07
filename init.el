@@ -19,12 +19,12 @@
 
 (defvar package-list
   '(better-defaults
+    company
     elpy
     flycheck
     haskell-mode
     helm
-    lsp-mode
-    lsp-ui
+    jedi
     magit
     material-theme
     multiple-cursors
@@ -33,6 +33,7 @@
     rainbow-delimiters
     ruby-electric
     undo-tree
+    use-package
     yaml-mode))
 
 (mapc #'(lambda (package)
@@ -40,13 +41,17 @@
       (package-install package)))
       package-list)
 
-;; misc
+;; misc/global
 (load-theme 'material t) ;; load the "material" theme
 (global-linum-mode t)    ;; enable line numbers globally
 (setq column-number-mode t) ;; enable column numbers globally
 (windmove-default-keybindings) ;; shift + arrow = switch open buffers
 (electric-pair-mode 1) ;; enable matching close paren/quote/etc globally
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+(global-undo-tree-mode) ;; use undo-tree mode everywhere
+(set-frame-font "Menlo-15" nil t) ;; set the default font to Menlo, size 15
+(setq inhibit-startup-screen t) ;; don't show the emacs start screen
+(add-hook 'after-init-hook 'global-company-mode) ;; enable company mode globally
 
 ;; file backup stuff
 (setq
@@ -71,21 +76,11 @@
 ;; we can still exit multiple-cursor mode with C-g
 (define-key mc/keymap (kbd "<return>") nil)
 
+
 ;; flycheck stuff
-(global-flycheck-mode)
-
-
-;; not totally sure why I commented this out
-;; come back to this later and see what's up
-;;(package-install 'exec-path-from-shell)
-;;(exec-path-from-shell-initialize)
-
-
-;; lsp config
-(require 'lsp-mode)
-(require 'lsp-ui)
-(add-hook 'lsp-mode-hook 'lsp-ui-mode)
-(add-hook 'java-mode-hook 'flycheck-mode)
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode))
 
 
 ;; magit config
@@ -113,27 +108,18 @@
 (add-hook 'ruby-mode-hook 'ruby-electric-mode)
 
 ;; python-specific stuff
-(elpy-enable)
-
-(setq python-flymake-command "pylint")
-(defvaralias 'flycheck-python-pylint-executable 'python-shell-intepreter)
-(add-hook 'python-mode-hook 'jedi:setup)
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(inhibit-startup-screen t)
- '(package-selected-packages
-   (quote
-    (undo-tree racket-mode ruby-electric haskell-mode company-jedi lsp-ui lsp-java lsp-mode helm org org-plus-contrib multiple-cursors yaml-mode exec-path-from-shell flycheck jedi elpy material-theme better-defaults))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(use-package elpy
+  :ensure t
+  :init
+  (elpy-enable)
+  (setq python-flymake-command "pylint")
+  (setq elpy-rpc-backend "jedi")
+  (setq elpy-syntax-check-command "pylint")
+  (defvaralias 'flycheck-python-pylint-executable 'python-shell-intepreter)
+  (define-key global-map [remap elpy-nav-indent-shift-left] 'left-word)
+  (define-key global-map [remap elpy-nav-indent-shift-right] 'right-word)
+  (setq python-shell-interpreter "ipython"
+        python-shell-interpreter-args "-i --simple-prompt --pprint"))
 
 ;; yaml
 (require 'yaml-mode)
@@ -147,3 +133,17 @@
 
 (provide 'init)
 ;;; init ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (company yaml-mode use-package ruby-electric rainbow-delimiters racket-mode multiple-cursors material-theme lsp-ui jedi helm haskell-mode flycheck evil-magit elpy better-defaults))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
