@@ -20,11 +20,14 @@
 (defvar package-list
   '(better-defaults
     company
+    company-lsp
     elpy
     flycheck
     haskell-mode
     helm
     jedi
+    lsp-mode
+    lsp-ui
     magit
     material-theme
     multiple-cursors
@@ -32,6 +35,8 @@
     racket-mode
     rainbow-delimiters
     ruby-electric
+    sbt-mode
+    scala-mode
     undo-tree
     use-package
     yaml-mode))
@@ -49,7 +54,7 @@
 (electric-pair-mode 1) ;; enable matching close paren/quote/etc globally
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 (global-undo-tree-mode) ;; use undo-tree mode everywhere
-(set-frame-font "Menlo-15" nil t) ;; set the default font to Menlo, size 15
+(set-frame-font "Menlo-14" nil t) ;; set the default font to Menlo, size 14
 (setq inhibit-startup-screen t) ;; don't show the emacs start screen
 (add-hook 'after-init-hook 'global-company-mode) ;; enable company mode globally
 
@@ -112,14 +117,41 @@
   :ensure t
   :init
   (elpy-enable)
-  (setq python-flymake-command "pylint")
-  (setq elpy-rpc-backend "jedi")
-  (setq elpy-syntax-check-command "pylint")
+  (setq python-flymake-command 'python-pylint)
+  (setq python-check-command 'python-pylint)
+  (setq flycheck-checker 'python-pylint)
+  (setq elpy-rpc-backend 'jedi)
+  (setq elpy-syntax-check-command 'python-pylint)
+  (setq elpy-rpc-virtualenv-path 'current)
   (defvaralias 'flycheck-python-pylint-executable 'python-shell-intepreter)
   (define-key global-map [remap elpy-nav-indent-shift-left] 'left-word)
   (define-key global-map [remap elpy-nav-indent-shift-right] 'right-word)
-  (setq python-shell-interpreter "ipython"
-        python-shell-interpreter-args "-i --simple-prompt --pprint"))
+  (when (load "flycheck" t t)
+    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+    (add-hook 'elpy-mode-hook 'flycheck-mode))
+  )
+
+;; scala and scala-related things
+(use-package scala-mode
+  :mode "\\.s\\(cala\\|bt\\)$")
+
+(use-package sbt-mode
+  :commands sbt-start sbt-command
+  :config
+  (substitute-key-definition
+   'minibuffer-complete-word
+   'self-insert-command
+   minibuffer-local-completion-map)
+  (setq sbt:program-options '("-Dsbt.supershell=false"))
+  )
+
+(use-package lsp-mode
+  :hook (scala-mode . lsp)
+  :config (setq lsp-prefer-flymake nil))
+
+(use-package lsp-ui)
+
+(use-package company-lsp)
 
 ;; yaml
 (require 'yaml-mode)
