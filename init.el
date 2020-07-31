@@ -117,11 +117,10 @@
   :ensure t
   :init
   (elpy-enable)
-  (setq python-flymake-command 'python-pylint)
-  (setq python-check-command 'python-pylint)
-  (setq flycheck-checker 'python-pylint)
-  (setq elpy-rpc-backend 'jedi)
-  (setq elpy-syntax-check-command 'python-pylint)
+  (setq python-flymake-command "python-pylint")
+  (setq python-check-command "python-pylint")
+  (setq flycheck-checker "python-pylint")
+  (setq elpy-syntax-check-command "python-pylint")
   (setq elpy-rpc-virtualenv-path 'current)
   (defvaralias 'flycheck-python-pylint-executable 'python-shell-intepreter)
   (define-key global-map [remap elpy-nav-indent-shift-left] 'left-word)
