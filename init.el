@@ -32,6 +32,7 @@
     racket-mode
     rainbow-delimiters
     ruby-electric
+    rust-mode
     undo-tree
     use-package
     yaml-mode))
@@ -49,11 +50,11 @@
 (electric-pair-mode 1) ;; enable matching close paren/quote/etc globally
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 (global-undo-tree-mode) ;; use undo-tree mode everywhere
-(set-frame-font "Menlo-15" nil t) ;; set the default font to Menlo, size 15
+(set-frame-font "Meslo LG S-12" nil t) ;; set the default font to Menlo, size 15
 (setq inhibit-startup-screen t) ;; don't show the emacs start screen
 (add-hook 'after-init-hook 'global-company-mode) ;; enable company mode globally
 
-;; file backup stuff
+;; File backup stuff
 (setq
    backup-by-copying t      ; don't clobber symlinks
    backup-directory-alist
@@ -121,6 +122,13 @@
   (setq python-shell-interpreter "ipython"
         python-shell-interpreter-args "-i --simple-prompt --pprint"))
 
+;; rust
+(use-package rust-mode
+  :ensure t
+  :init
+  (setq indent-tabs-mode nil)
+  (setq rust-format-on-save t))
+
 ;; yaml
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
@@ -140,7 +148,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (company yaml-mode use-package ruby-electric rainbow-delimiters racket-mode multiple-cursors material-theme lsp-ui jedi helm haskell-mode flycheck evil-magit elpy better-defaults))))
+    (rust-mode go-mode company-go company yaml-mode use-package ruby-electric rainbow-delimiters racket-mode multiple-cursors material-theme lsp-ui jedi helm haskell-mode flycheck evil-magit elpy better-defaults))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
