@@ -54,7 +54,8 @@
 (electric-pair-mode 1) ;; enable matching close paren/quote/etc globally
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 (global-undo-tree-mode) ;; use undo-tree mode everywhere
-(set-frame-font "Menlo-14" nil t) ;; set the default font to Menlo, size 14
+;; (set-frame-font "Menlo-14" nil t) ;; set the default font to Menlo, size 14
+(set-frame-font "JetBrains Mono-16" nil t) ;; set the default font to Menlo, size 14
 (setq inhibit-startup-screen t) ;; don't show the emacs start screen
 (add-hook 'after-init-hook 'global-company-mode) ;; enable company mode globally
 
