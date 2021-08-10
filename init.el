@@ -23,6 +23,7 @@
     company-lsp
     elpy
     flycheck
+    fstar-mode
     haskell-mode
     helm
     jedi
@@ -54,7 +55,8 @@
 (electric-pair-mode 1) ;; enable matching close paren/quote/etc globally
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 (global-undo-tree-mode) ;; use undo-tree mode everywhere
-(set-frame-font "Menlo-14" nil t) ;; set the default font to Menlo, size 14
+;; (set-frame-font "Menlo-14" nil t) ;; set the default font to Menlo, size 14
+(set-frame-font "JetBrains Mono-12" nil t) ;; set the font
 (setq inhibit-startup-screen t) ;; don't show the emacs start screen
 (add-hook 'after-init-hook 'global-company-mode) ;; enable company mode globally
 
@@ -117,11 +119,10 @@
   :ensure t
   :init
   (elpy-enable)
-  (setq python-flymake-command 'python-pylint)
-  (setq python-check-command 'python-pylint)
-  (setq flycheck-checker 'python-pylint)
-  (setq elpy-rpc-backend 'jedi)
-  (setq elpy-syntax-check-command 'python-pylint)
+  (setq python-flymake-command "python-pylint")
+  (setq python-check-command "python-pylint")
+  (setq flycheck-checker "python-pylint")
+  (setq elpy-syntax-check-command "python-pylint")
   (setq elpy-rpc-virtualenv-path 'current)
   (defvaralias 'flycheck-python-pylint-executable 'python-shell-intepreter)
   (define-key global-map [remap elpy-nav-indent-shift-left] 'left-word)
@@ -130,6 +131,10 @@
     (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
     (add-hook 'elpy-mode-hook 'flycheck-mode))
   )
+
+;; fstar-mode
+(setq-default fstar-executable "/home/rory/.opam/4.07.1/bin/fstar.exe")
+(setq-default fstar-smt-executable "/home/rory/.opam/4.07.1/bin/z3")
 
 ;; scala and scala-related things
 (use-package scala-mode
@@ -172,10 +177,11 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (company yaml-mode use-package ruby-electric rainbow-delimiters racket-mode multiple-cursors material-theme lsp-ui jedi helm haskell-mode flycheck evil-magit elpy better-defaults))))
+    (fstar-mode idris-mode company yaml-mode use-package ruby-electric rainbow-delimiters racket-mode multiple-cursors material-theme lsp-ui jedi helm haskell-mode flycheck evil-magit elpy better-defaults))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
