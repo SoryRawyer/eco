@@ -1,66 +1,33 @@
-;;; Init.el --- summary
-;;; Commentary:
-;; Emacs setup
+ ;;; Init.el
 
-;; Install packages
+(setq inhibit-startup-message t)
 
-(require 'package)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+(tooltip-mode -1)
+(set-fringe-mode 10)
+;; enable column and line numbers, but exclude org mode, term mode, and eshell mode
+;; from showing line numbers
+(column-number-mode)
+(global-display-line-numbers-mode t)
+(dolist (mode '(org-mode-hook
+		term-mode-hook
+		eshell-mode-hook
+		shell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
-;;; Code:
-(add-to-list 'package-archives
-             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/") t)
-(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
-
-(package-initialize)
-(when (not package-archive-contents)
-  (package-refresh-contents))
-
-(defvar package-list
-  '(better-defaults
-    company
-    company-lsp
-    elpy
-    flycheck
-    fstar-mode
-    haskell-mode
-    helm
-    jedi
-    lsp-mode
-    lsp-ui
-    magit
-    material-theme
-    multiple-cursors
-    org
-    racket-mode
-    rainbow-delimiters
-    ruby-electric
-    sbt-mode
-    scala-mode
-    undo-tree
-    use-package
-    yaml-mode))
-
-(mapc #'(lambda (package)
-    (unless (package-installed-p package)
-      (package-install package)))
-      package-list)
-
-;; misc/global
-(load-theme 'material t) ;; load the "material" theme
-(global-linum-mode t)    ;; enable line numbers globally
-(setq column-number-mode t) ;; enable column numbers globally
 (windmove-default-keybindings) ;; shift + arrow = switch open buffers
-(electric-pair-mode 1) ;; enable matching close paren/quote/etc globally
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-(global-undo-tree-mode) ;; use undo-tree mode everywhere
-;; (set-frame-font "Menlo-14" nil t) ;; set the default font to Menlo, size 14
-(set-frame-font "JetBrains Mono-12" nil t) ;; set the font
-(setq inhibit-startup-screen t) ;; don't show the emacs start screen
-(add-hook 'after-init-hook 'global-company-mode) ;; enable company mode globally
+;; Make windmove work in Org mode:
+(add-hook 'org-shiftup-final-hook 'windmove-up)
+(add-hook 'org-shiftleft-final-hook 'windmove-left)
+(add-hook 'org-shiftdown-final-hook 'windmove-down)
+(add-hook 'org-shiftright-final-hook 'windmove-right)
 
-;; file backup stuff
+;; change the location of autosave files
+(setq auto-save-file-name-transforms
+      '((".*" "~/.autosaves/" t)))
+
+;; file backup stuff - taken from my old config
 (setq
    backup-by-copying t      ; don't clobber symlinks
    backup-directory-alist
@@ -70,8 +37,37 @@
    kept-old-versions 2
    version-control t)       ; use versioned backups
 
-(setq auto-save-file-name-transforms
-      '((".*" "~/.autosaves/" t)))
+;; we want <return> to enter a newline in multiple curosr mode
+;; we can still exit multiple-cursor mode with C-g
+;; (define-key mc/keymap (kbd "<return>") nil)
+
+(electric-pair-mode 1) ;; enable matching close paren/quote/etc globally
+
+
+(menu-bar-mode -1)
+
+(setq visible-bell t)
+
+;; use ESC to quit out of things
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+
+(set-face-attribute 'default nil :font "JetBrains Mono" :height 100)
+
+(load-theme 'misterioso)
+(require 'package)
+
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+			 ("org" . "https://orgmode.org/elpa/")
+			 ("elpa" . "https://elpa.gnu.org/packages/")))
+
+(package-initialize)
+(unless package-archive-contents
+  (package-refresh-contents))
+
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
 
 ;; multiple cursor config
 (require 'multiple-cursors)
@@ -84,104 +80,184 @@
 (define-key mc/keymap (kbd "<return>") nil)
 
 
-;; flycheck stuff
-(use-package flycheck
-  :ensure t
-  :init (global-flycheck-mode))
+(require 'use-package)
+;;; use-package-always-ensure t means that we shouldn't need to use ":ensure t"
+;;; when we call use-package
+(setq use-package-always-ensure t)
 
-
-;; magit config
-(global-set-key (kbd "C-x g") 'magit-status)
-
-;; org mode
-(require 'org)
-(global-set-key (kbd "C-c o l") 'org-store-link)
-(global-set-key (kbd "C-c o a") 'org-agenda)
-(global-set-key (kbd "C-c o c") 'org-capture)
-(global-set-key (kbd "C-c o b") 'org-switchb)
-(setq org-log-done t)
-
-;; Make windmove work in Org mode:
-(add-hook 'org-shiftup-final-hook 'windmove-up)
-(add-hook 'org-shiftleft-final-hook 'windmove-left)
-(add-hook 'org-shiftdown-final-hook 'windmove-down)
-(add-hook 'org-shiftright-final-hook 'windmove-right)
-
-;; helm mode
-(require 'helm-config)
-(helm-mode 1)
-
-;; ruby mode
-(add-hook 'ruby-mode-hook 'ruby-electric-mode)
-
-;; python-specific stuff
-(use-package elpy
-  :ensure t
-  :init
-  (elpy-enable)
-  (setq python-flymake-command "python-pylint")
-  (setq python-check-command "python-pylint")
-  (setq flycheck-checker "python-pylint")
-  (setq elpy-syntax-check-command "python-pylint")
-  (setq elpy-rpc-virtualenv-path 'current)
-  (defvaralias 'flycheck-python-pylint-executable 'python-shell-intepreter)
-  (define-key global-map [remap elpy-nav-indent-shift-left] 'left-word)
-  (define-key global-map [remap elpy-nav-indent-shift-right] 'right-word)
-  (when (load "flycheck" t t)
-    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-    (add-hook 'elpy-mode-hook 'flycheck-mode))
-  )
-
-;; fstar-mode
-(setq-default fstar-executable "/home/rory/.opam/4.07.1/bin/fstar.exe")
-(setq-default fstar-smt-executable "/home/rory/.opam/4.07.1/bin/z3")
-
-;; scala and scala-related things
-(use-package scala-mode
-  :mode "\\.s\\(cala\\|bt\\)$")
-
-(use-package sbt-mode
-  :commands sbt-start sbt-command
+(use-package undo-tree
   :config
-  (substitute-key-definition
-   'minibuffer-complete-word
-   'self-insert-command
-   minibuffer-local-completion-map)
-  (setq sbt:program-options '("-Dsbt.supershell=false"))
+  (global-undo-tree-mode))
+
+;;; theme
+;; decided not to use this, but... just in case
+;; (use-package doom-themes
+;;   :config
+;;   (setq doom-themes-enable-bold t
+;; 	doom-themes-enable-italic t)
+;;   (load-theme 'doom-material t)
+
+;;   ;; enable flashing mode-line on errors
+;;   (doom-themes-visual-bell-config)
+;;   ;; something about org mode. check the doom-themes readme
+;;   (doom-themes-org-config))
+
+;;; command-log-mode
+
+(use-package command-log-mode)
+
+;;; ivy
+(use-package ivy
+  :diminish
+  :bind (("C-s" . swiper)
+	 :map ivy-minibuffer-map
+	 ("TAB" . ivy-alt-done)
+	 ("C-l" . ivy-alt-done)
+	 ("C-j" . ivy-next-line)
+	 ("C-k" . ivy-previous-line)
+	 :map ivy-switch-buffer-map
+	 ("C-k" . ivy-previous-line)
+	 ("C-l" . ivy-done)
+	 ("C-d" . ivy-switch-buffer-kill)
+	 :map ivy-reverse-i-search-map
+	 ("C-k" . ivy-previous-line)
+	 ("C-d" . ivy-reverse-i-search-kill))
+  :config
+  (ivy-mode 1))
+
+(use-package ivy-rich
+  :init
+  (ivy-rich-mode 1))
+
+
+(use-package counsel
+  :bind (("M-x" . counsel-M-x)
+	 ("C-x b" . counsel-ibuffer)
+	 ("C-x C-f" . counsel-find-file)
+	 :map minibuffer-local-map
+	 ("C-r" . 'counsel-minibuffer-history)))
+
+
+;;; rainbow parens
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+;; prog-mode is the base mode of any programming language mode
+
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 0.2))
+
+;;; projectile
+(use-package projectile
+  :diminish projectile-mode
+  :config (projectile-mode)
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :init
+  (when (file-directory-p "~/dev/")
+    (setq projectile-project-search-path '("~/dev/")))
+  (setq projectile-switch-project-action #'projectile-dired))
+
+(use-package counsel-projectile
+  :config (counsel-projectile-mode))
+
+;;; magit
+(use-package magit
+  :custom
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+;;; org mode
+(defun rds/org-mode-setup ()
+  ;;(org-indent-mode)
+  (variable-pitch-mode 1)
+  (auto-fill-mode 0)
+  (visual-line-mode 1))
+
+(use-package org
+  ;;:hook (org-mode . rds/org-mode-setup)
+  :config
+  (setq org-ellipsis " ▼"
+	org-hide-emphasis-markers t))
+
+(use-package org-bullets
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+;;; lsp stuff
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :config
+  (lsp-enable-which-key-integration t))
+
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-position 'bottom)
+  (lsp-ui-sideline-show-diagnostics t)
+  ;;(lsp-ui-sideline-show-hover t)
+  (lsp-ui-sideline-show-code-actions t)
+  (lsp-ui-sideline-diagnostic-max-lines 10)
   )
 
-(use-package lsp-mode
-  :hook (scala-mode . lsp)
-  :config (setq lsp-prefer-flymake nil))
+(use-package lsp-ivy
+  :after lsp)
 
-(use-package lsp-ui)
+(use-package company
+  :after lsp-mode
+  :hook (lsp-mode . company-mode)
+  :bind (:map company-active-map
+	      ("<tab>" . company-complete-selection))
+  (:map lsp-mode-map
+	("<tab>" . company-indent-or-complete-common))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0))
 
-(use-package company-lsp)
+(use-package company-box
+  :hook (company-mode . company-box-mode))
 
-;; yaml
-(require 'yaml-mode)
-(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+;; typescript
+(use-package typescript-mode
+  :mode "\\.ts\\'" ;; any time we open a file that ends with .ts, use typescript-mode
+  :hook (typescript-mode . lsp-deferred)
+  :config
+  (setq typescript-indent-level 2))
 
-;; add a hook to automatically indent newlines in yaml files
-(add-hook 'yaml-mode-hook
-          '(lambda ()
-             (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+;; python
 
+;; from https://emacs-lsp.github.io/lsp-pyright/
+(use-package lsp-pyright
+  :hook (python-mode . (lambda ()
+			 (require 'lsp-pyright)
+			 (lsp))))
 
-(provide 'init)
-;;; init ends here
+(use-package pyvenv
+  :after python-mode
+  :config
+  (pyvenv-mode 1))
+
+;; rust
+;; (use-package rust-mode)
+(use-package rustic)
+
+;;; auto-generated
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(global-command-log-mode t)
  '(package-selected-packages
-   (quote
-    (fstar-mode idris-mode company yaml-mode use-package ruby-electric rainbow-delimiters racket-mode multiple-cursors material-theme lsp-ui jedi helm haskell-mode flycheck evil-magit elpy better-defaults))))
+   '(rustic flycheck org-bullets lsp-ui company-box company lsp-pyright typescript-mode lsp-mode magit counsel-projectile projectile doom-themes ivy-rich which-key rainbow-delimiters counsel ivy command-log-mode use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-
