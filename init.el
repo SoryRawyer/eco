@@ -191,6 +191,9 @@
   :commands (lsp lsp-deferred)
   :init
   (setq lsp-keymap-prefix "C-c l")
+  :custom
+  (lsp-rust-analyzer-cargo-watch-command "clippy")
+  (lsp-rust-analyzer-server-display-inlay-hints t)
   :config
   (lsp-enable-which-key-integration t))
 
@@ -198,11 +201,7 @@
   :hook (lsp-mode . lsp-ui-mode)
   :custom
   (lsp-ui-doc-position 'bottom)
-  (lsp-ui-sideline-show-diagnostics t)
-  ;;(lsp-ui-sideline-show-hover t)
-  (lsp-ui-sideline-show-code-actions t)
-  (lsp-ui-sideline-diagnostic-max-lines 10)
-  )
+  (lsp-ui-sideline-diagnostic-max-lines 3))
 
 (use-package lsp-ivy
   :after lsp)
@@ -245,6 +244,12 @@
 ;; (use-package rust-mode)
 (use-package rustic)
 
+;; javascript
+(use-package js2-mode
+  :mode "\\.js\\'")
+
+;; (add-hook 'js-mode-hook (lambda () (tern-mode t)))
+
 ;;; auto-generated
 
 (custom-set-variables
@@ -254,7 +259,7 @@
  ;; If there is more than one, they won't work right.
  '(global-command-log-mode t)
  '(package-selected-packages
-   '(rustic flycheck org-bullets lsp-ui company-box company lsp-pyright typescript-mode lsp-mode magit counsel-projectile projectile doom-themes ivy-rich which-key rainbow-delimiters counsel ivy command-log-mode use-package)))
+   '(js2-mode rustic flycheck org-bullets lsp-ui company-box company lsp-pyright typescript-mode lsp-mode magit counsel-projectile projectile doom-themes ivy-rich which-key rainbow-delimiters counsel ivy command-log-mode use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
