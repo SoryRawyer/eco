@@ -1,6 +1,7 @@
  ;;; Init.el
 
 (setq inhibit-startup-message t)
+(setq-default indent-tabs-mode nil)
 
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
@@ -52,9 +53,9 @@
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 
-(set-face-attribute 'default nil :font "JetBrains Mono" :height 100)
+(set-face-attribute 'default nil :font "JetBrains Mono" :height 125)
 
-(load-theme 'misterioso)
+(load-theme 'material t)
 (require 'package)
 
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
@@ -220,9 +221,11 @@
 (use-package company-box
   :hook (company-mode . company-box-mode))
 
+(add-hook 'js-mode-hook (lambda () (lsp)))
+
 ;; typescript
 (use-package typescript-mode
-  :mode "\\.ts\\'" ;; any time we open a file that ends with .ts, use typescript-mode
+  :mode "\\.tsx?\\'" ;; any time we open a file that ends with .ts, use typescript-mode
   :hook (typescript-mode . lsp-deferred)
   :config
   (setq typescript-indent-level 2))
@@ -233,7 +236,9 @@
 (use-package lsp-pyright
   :hook (python-mode . (lambda ()
 			 (require 'lsp-pyright)
-			 (lsp))))
+			 (lsp)))
+  :config
+  (setq lsp-pyright-venv-path "/home/rory/.local/share/virtualenvs/"))
 
 (use-package pyvenv
   :after python-mode
@@ -244,11 +249,22 @@
 ;; (use-package rust-mode)
 (use-package rustic)
 
-;; javascript
+;; javascript and typescript
 (use-package js2-mode
-  :mode "\\.js\\'")
+  :mode "\\.js\\'"
+  :config
+  (setq indent-tabs-mode nil))
 
-;; (add-hook 'js-mode-hook (lambda () (tern-mode t)))
+(use-package tide
+  :after (typescript-mode company flycheck)
+  :hook ((typescipt-mode . tide-setup)
+	 (typescript-mode . tide-hl-identifier-mode)
+	 (before-save . tide-format-before-save))
+  :config
+  (setq indent-tabs-mode nil))
+
+;; this needs to be after tide because otherwise there will be... TABS
+(add-hook 'js-mode-hook (lambda () (setq js-indent-level 2)))
 
 ;;; auto-generated
 
@@ -257,9 +273,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("90a6f96a4665a6a56e36dec873a15cbedf761c51ec08dd993d6604e32dd45940" "3b8284e207ff93dfc5e5ada8b7b00a3305351a3fb222782d8033a400a48eca48" default))
  '(global-command-log-mode t)
  '(package-selected-packages
-   '(js2-mode rustic flycheck org-bullets lsp-ui company-box company lsp-pyright typescript-mode lsp-mode magit counsel-projectile projectile doom-themes ivy-rich which-key rainbow-delimiters counsel ivy command-log-mode use-package)))
+   '(material-theme zenburn-theme tern tide js2-mode rustic flycheck org-bullets lsp-ui company-box company lsp-pyright typescript-mode lsp-mode magit counsel-projectile projectile doom-themes ivy-rich which-key rainbow-delimiters counsel ivy command-log-mode use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
