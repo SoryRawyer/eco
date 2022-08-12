@@ -25,7 +25,8 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-material)
+;; (setq doom-theme 'doom-material)
+(setq doom-theme 'doom-tomorrow-night)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -71,10 +72,20 @@
          ("C-k" . ivy-previous-line)
          ("C-d" . ivy-reverse-i-search-kill)))
 
+(use-package! prettier)
 (add-hook! 'js-mode (setq js-indent-level 2))
-
+(add-hook! 'typescript-mode (setq typescript-indent-level 2))
 
 (add-hook! 'org-shiftup-final-hook 'windmove-up)
 (add-hook! 'org-shiftleft-final-hook 'windmove-left)
 (add-hook! 'org-shiftdown-final-hook 'windmove-down)
 (add-hook! 'org-shiftright-final-hook 'windmove-right)
+
+(set-face-attribute 'default nil :font "JetBrains Mono" :height 120)
+
+(use-package! csv-mode)
+;; (use-package! multiple-cursors)
+;; (global-set-key (kbd "C-c m c") 'mc/edit-lines)
+;; (global-set-key (kbd "C-c m f") 'mc/mark-next-like-this)
+;; (global-set-key (kbd "C-c m b") 'mc/mark-previous-like-this)
+;; (global-set-key (kbd "C-c m a") 'mc/mark-all-like-this)
