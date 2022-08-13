@@ -84,8 +84,3 @@
 (set-face-attribute 'default nil :font "JetBrains Mono" :height 120)
 
 (use-package! csv-mode)
-;; (use-package! multiple-cursors)
-;; (global-set-key (kbd "C-c m c") 'mc/edit-lines)
-;; (global-set-key (kbd "C-c m f") 'mc/mark-next-like-this)
-;; (global-set-key (kbd "C-c m b") 'mc/mark-previous-like-this)
-;; (global-set-key (kbd "C-c m a") 'mc/mark-all-like-this)
