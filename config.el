@@ -7,7 +7,7 @@
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
 (setq user-full-name "Rory Sawyer"
-      user-mail-address "rory@daily.co")
+      user-mail-address "rory@sawyer.dev")
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
 ;; are the three important ones:
@@ -72,10 +72,22 @@
          ("C-k" . ivy-previous-line)
          ("C-d" . ivy-reverse-i-search-kill)))
 
+;; js/typescript/web-mode config
 (use-package! prettier)
 (add-hook! 'js-mode (setq js-indent-level 2))
+(setq-hook! 'js-mode-hook +format-with :none)
 (add-hook! 'typescript-mode (setq typescript-indent-level 2))
+;; (setq-hook! 'typescript-mode-hook +format-with-lsp nil)
+(setq-hook! 'typescript-mode-hook +format-with :none)
 
+(defun web-mode-indent-hook ()
+  "hooks for web-mode"
+  (setq web-mode-code-indent-offset 2)
+  (setq-hook! 'web-mode-hook +format-with-lsp nil))
+(add-hook! 'web-mode-hook 'web-mode-indent-hook)
+(setq-hook! 'web-mode-hook +format-with :none)
+
+;; keep shift+direction window navigation in org mode
 (add-hook! 'org-shiftup-final-hook 'windmove-up)
 (add-hook! 'org-shiftleft-final-hook 'windmove-left)
 (add-hook! 'org-shiftdown-final-hook 'windmove-down)
