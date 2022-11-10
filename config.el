@@ -72,9 +72,20 @@
          ("C-k" . ivy-previous-line)
          ("C-d" . ivy-reverse-i-search-kill)))
 
+;; js/typescript/web-mode config
 (use-package! prettier)
 (add-hook! 'js-mode (setq js-indent-level 2))
+(setq-hook! 'js-mode-hook +format-with :none)
 (add-hook! 'typescript-mode (setq typescript-indent-level 2))
+;; (setq-hook! 'typescript-mode-hook +format-with-lsp nil)
+(setq-hook! 'typescript-mode-hook +format-with :none)
+
+(defun web-mode-indent-hook ()
+  "Hooks for web-mode."
+  (setq web-mode-code-indent-offset 2)
+  (setq-hook! 'web-mode-hook +format-with-lsp nil))
+(add-hook! 'web-mode-hook 'web-mode-indent-hook)
+(setq-hook! 'web-mode-hook +format-with :none)
 
 (add-hook! 'org-shiftup-final-hook 'windmove-up)
 (add-hook! 'org-shiftleft-final-hook 'windmove-left)
@@ -82,5 +93,3 @@
 (add-hook! 'org-shiftright-final-hook 'windmove-right)
 
 (set-face-attribute 'default nil :font "JetBrains Mono" :height 120)
-
-(use-package! csv-mode)
