@@ -78,6 +78,7 @@
 (add-hook! 'js-mode (setq js-indent-level 2))
 (setq-hook! 'js-mode-hook +format-with :none)
 (setq typescript-indent-level 2)
+(add-hook! 'typescript-mode (setq typescript-indent-level 2))
 
 (defun web-mode-indent-hook ()
   "Hooks for web-mode."
@@ -85,6 +86,7 @@
   (setq web-mode-markup-indent-offset 2)
   (setq web-mode-css-indent-offset 2)
   (setq-hook! 'web-mode-hook +format-with-lsp nil))
+(add-to-list 'auto-mode-alist '("\\.liquid\\'" . web-mode))
 (add-hook! 'web-mode-hook 'web-mode-indent-hook)
 (setq-hook! 'web-mode-hook +format-with :none)
 
@@ -99,3 +101,6 @@
 
 ;; enter your coq era whenever you're coqmoding
 (add-hook! 'coq-mode-hook #'company-coq-mode)
+
+;; going gleam mode
+(use-package! gleam-mode :load-path "/home/rory/.doom.d/local-packages/gleam-mode")

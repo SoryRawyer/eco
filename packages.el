@@ -51,4 +51,6 @@
 
 (package! prettier)
 (package! prisma-mode :recipe (:host github :repo "pimeys/emacs-prisma-mode" :branch "main"))
-(package! robe)
+(package! tree-sitter-indent)
+;; (package! gleam-mode :recipe (:local-repo "./local-packages/gleam-mode"))
+;; (package! gleam-mode :recipe (:host github :repo "gleam-lang/gleam-mode" :nonrecursive nil))
