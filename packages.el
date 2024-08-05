@@ -50,7 +50,12 @@
 ;(unpin! t)
 
 (package! prettier)
-(package! prisma-mode :recipe (:host github :repo "pimeys/emacs-prisma-mode" :branch "main"))
 (package! tree-sitter-indent)
+(package! nvm)
+(package! bazel-mode :recipe (:host github :repo "bazelbuild/emacs-bazel-mode"))
 ;; (package! gleam-mode :recipe (:local-repo "./local-packages/gleam-mode"))
 ;; (package! gleam-mode :recipe (:host github :repo "gleam-lang/gleam-mode" :nonrecursive nil))
+(package! org-modern)
+(package! envrc)
+(package! rustic)
+(unpin! lsp-mode)

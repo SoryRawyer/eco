@@ -26,7 +26,8 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 ;; (setq doom-theme 'doom-material)
-(setq doom-theme 'doom-tomorrow-night)
+;; (setq doom-theme 'doom-tomorrow-night)
+(setq doom-theme 'doom-molokai)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -72,9 +73,8 @@
          ("C-k" . ivy-previous-line)
          ("C-d" . ivy-reverse-i-search-kill)))
 
-;; js/typescript/web-mode/prisma config
+;; js/typescript/web-mode config
 (use-package! prettier)
-(use-package! prisma-mode)
 (add-hook! 'js-mode (setq js-indent-level 2))
 (setq-hook! 'js-mode-hook +format-with :none)
 (setq typescript-indent-level 2)
@@ -87,20 +87,28 @@
   (setq web-mode-css-indent-offset 2)
   (setq-hook! 'web-mode-hook +format-with-lsp nil))
 (add-to-list 'auto-mode-alist '("\\.liquid\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.njk\\'" . web-mode))
 (add-hook! 'web-mode-hook 'web-mode-indent-hook)
 (setq-hook! 'web-mode-hook +format-with :none)
 
 
+;; org
+(global-org-modern-mode)
 ;; enable shift+direction to move windows while in org mode
 (add-hook! 'org-shiftup-final-hook 'windmove-up)
 (add-hook! 'org-shiftleft-final-hook 'windmove-left)
 (add-hook! 'org-shiftdown-final-hook 'windmove-down)
 (add-hook! 'org-shiftright-final-hook 'windmove-right)
 
-(set-face-attribute 'default nil :font "JetBrains Mono" :height 120)
+(set-face-attribute 'default nil :font "JetBrains Mono" :height 125)
 
-;; enter your coq era whenever you're coqmoding
+;; go coq-mode when you're in your coq era
 (add-hook! 'coq-mode-hook #'company-coq-mode)
 
-;; going gleam mode
-(use-package! gleam-mode :load-path "/home/rory/.doom.d/local-packages/gleam-mode")
+(add-to-list 'auto-mode-alist '("\\.star\\'" . bazel-starlark-mode))
+
+;; rust
+(add-hook! 'rust-mode-hook 'lsp-deferred)
+(use-package! rustic)
+
+(envrc-global-mode)
