@@ -100,7 +100,7 @@
 (add-hook! 'org-shiftdown-final-hook 'windmove-down)
 (add-hook! 'org-shiftright-final-hook 'windmove-right)
 
-(set-face-attribute 'default nil :font "JetBrains Mono" :height 125)
+(set-face-attribute 'default nil :font "JetBrains Mono" :height 150)
 
 ;; go coq-mode when you're in your coq era
 (add-hook! 'coq-mode-hook #'company-coq-mode)
