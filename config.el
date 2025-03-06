@@ -27,7 +27,8 @@
 ;; `load-theme' function. This is the default:
 ;; (setq doom-theme 'doom-material)
 ;; (setq doom-theme 'doom-tomorrow-night)
-(setq doom-theme 'doom-molokai)
+(setq doom-theme 'doom-monokai-pro)
+;; (setq doom-theme doom-snazzy)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -100,11 +101,12 @@
 (add-hook! 'org-shiftdown-final-hook 'windmove-down)
 (add-hook! 'org-shiftright-final-hook 'windmove-right)
 
-(set-face-attribute 'default nil :font "JetBrains Mono" :height 150)
+(set-face-attribute 'default nil :font "JetBrains Mono" :height 120)
 
 ;; go coq-mode when you're in your coq era
 (add-hook! 'coq-mode-hook #'company-coq-mode)
 
+;; starlark
 (add-to-list 'auto-mode-alist '("\\.star\\'" . bazel-starlark-mode))
 
 ;; rust
@@ -112,3 +114,8 @@
 (use-package! rustic)
 
 (envrc-global-mode)
+
+;; gleam
+(use-package! gleam-ts-mode
+  :mode (rx ".gleam" eos))
+(add-hook! 'gleam-ts-mode-hook 'lsp-deferred)
